@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Eigen REQUIRED)
-
+find_package(OpenCV REQUIRED)
 add_message_files(
   FILES
 )
@@ -31,7 +31,7 @@ generate_messages(
 
 catkin_package(
   INCLUDE_DIRS
-  LIBRARIES 
+  LIBRARIES
   CATKIN_DEPENDS image_transport roscpp sensor_msgs geometry_msgs tf cv_bridge message_runtime std_msgs nodelet
   DEPENDS Eigen
 )

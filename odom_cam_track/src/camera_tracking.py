@@ -1,12 +1,12 @@
 
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+#import matplotlib.pyplot as plt
+#import matplotlib.image as mpimg
 import numpy as np
 import cv2
 import math
 import os
-from moviepy.editor import VideoFileClip
-from IPython.display import HTML
+#from moviepy.editor import VideoFileClip
+#from IPython.display import HTML
 
 def grayscale(img):
     """Applies the Grayscale transform
@@ -91,7 +91,6 @@ def weighted_img(img, initial_img, α=0.8, β=1., λ=0.):
     return cv2.addWeighted(initial_img, α, img, β, λ)
 
 def get_red_thresh_img(p_img):
-    """
     #Red_Thresholds HSV
 	lower_red1 = np.array([0, 100, 100])
 	upper_red1 = np.array([10, 255,255])
@@ -101,16 +100,17 @@ def get_red_thresh_img(p_img):
     #in BGR
     lower_red1 = np.array([104, 27, 152])
     upper_red1 = np.array([205,255,255])
+    """
     return cv2.inRange(p_img, lower_red1, upper_red1)
 
 def get_green_thresh_img(p_img):
-    """ #in HSV
     lower_green = np.array([60,60,46])
 	upper_green = np.array([97,255,255])
     """
     #in BGR
     lower_green = np.array([70,108,128])
     upper_green = np.array([163,255,255])
+    """ #in HSV
 	# Threshold the HSV image to get only single color portions
     return cv2.inRange(p_img, lower_green, upper_green)
 
@@ -197,15 +197,57 @@ def process_image(image):
 """
 Main program
 """
+
+"""
 image = cv2.imread('img_vid/im3.jpg')
 f_img = process_image(image)
 #cv2.imshow("final", f_img)
 cv2.imwrite("img_vid/fi.jpg",f_img)
 #cv2.waitKey()
 
-"""
 white_output = 'img_vid/vid1_0.mp4'
 clip1 = VideoFileClip("img_vid/vid2.mp4")
 white_clip = clip1.fl_image(process_image) #NOTE: this function expects color images!!
 white_clip.write_videofile(white_output, audio=False)
 """
+
+def callback(data):
+    global cv_image
+    bridge = CvBridge()
+    #Use the below code for Turtlebot compressed image
+    #np_arr = np.fromstring(data.data, np.uint8)
+    #cv_image = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
+    #If subscribing to Drone use the below line
+    print 'callback'
+    """
+    np_arr = np.fromstring(data.data, np.uint8)
+    cv_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+    final_img = process_image(cv_image)
+    track_pub.publish(final_img)
+    """
+"""
+def main(args):
+    rospy.init_node('hsv_picker', anonymous = False)
+    ic = hsv_picker()
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        print('Shutting Down hsv_picker Node')
+        cv2.destroyAllWindows()
+        video.release()
+
+if __name__ == '__main__':
+	main(sys.argv)
+"""
+
+def main(args):
+    rospy.init_node('camera_tracker', anonymous=False)
+    image_sub = rospy.Subscriber("/app/camera/rgb/image_raw/compressed",CompressedImage, callback)
+    track_pub = rospy.Publisher("/track_img", Image, queue_size =1)
+    rate = rospy.Rate(10)
+    while not rospy.is_shutdown():
+        rospy.spin()
+        rate.sleep()
+
+if __name__ == '__main__':
+    main(sys.argv)
