@@ -109,9 +109,11 @@ def process_image(image):
         #TODO - These coordinates are transformed to match with origin and orientation of odom coordinates
         file2write.write(str(image_time))
         file2write.write(",")
+        #TODO Added '- sign to match with the Version 2 car'
+
         file2write.write(str((initial_x_y[0] - g_squares[0][0])/one_m_pixel ))
         file2write.write(",")
-        file2write.write(str( (initial_x_y[1] - g_squares[0][1])/one_m_pixel ))
+        file2write.write(str((initial_x_y[1] - g_squares[0][1])/one_m_pixel ))
         file2write.write("\n")
     elif (len(g_squares) != 0) and initial_cordi_set == False:
         initial_cordi_set = True

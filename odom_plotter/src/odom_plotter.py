@@ -11,6 +11,7 @@ from matplotlib import animation
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
+from heading_msg.msg import Yaw
 
 x = np.array([])
 y = np.array([])
@@ -50,9 +51,14 @@ def odom_callback(data):
     file2write.write("\n")
     #"""
 
+def yaw_callback(data):
+    print(data)
+
 def main(args):
     rospy.init_node('odom_plotter', anonymous = False)
     image_sub = rospy.Subscriber("/odom",Odometry, odom_callback)
+    #image_sub = rospy.Subscriber("/model_car/yaw",Float32, yaw_callback)
+    yaw_subs = rospy.Subscriber("/Yaw2",Yaw, yaw_callback)
     #ani = animation.FuncAnimation(fig, animate, interval=200000)
     #plt.show()
     rospy.spin()

@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(odom_plotter)
 
-find_package(catkin REQUIRED COMPONENTS nav_msgs std_msgs roscpp tf rospy)
+find_package(catkin REQUIRED COMPONENTS nav_msgs std_msgs roscpp tf rospy heading_msg)
 
 catkin_package()
 
+find_package(message_generation)
+
+catkin_package(CATKIN_DEPENDS message_runtime)
+
+add_dependencies( ${catkin_EXPORTED_TARGETS})
 
 include_directories(${catkin_INCLUDE_DIRS})
+
 
 # Build the executable
 #add_executable(odom_plotter src/odom_plotter.py)
